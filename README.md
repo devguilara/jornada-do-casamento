@@ -1,162 +1,166 @@
-# 💍 Planejamento de Casamento - MVP com Laravel
+# 💍 Planejamento de Casamento - MVP com Java 21 + Spring Boot
 
-## 🎯 Objetivo
+## 🌟 Objetivo
 
 Criar uma aplicação web simples onde casais possam organizar e centralizar o planejamento do seu casamento, com foco em:
 
-- Checklist de tarefas
-- Ideias de músicas
-- Inspirações visuais (imagens)
+* Checklist de tarefas
+* Ideias de músicas
+* Inspirações visuais (imagens)
 
 ---
 
 ## 🚀 Tecnologias
 
-- **Backend:** PHP 8+ com Laravel 10
-- **Frontend:** Blade + Bootstrap 5
-- **Banco de dados:** MySQL ou PostgreSQL
-- **Upload de imagens:** Filesystem local (public/images) ou Cloudinary (futuramente)
+* **Backend:** Java 21 + Spring Boot 3.x
+* **Frontend:** Thymeleaf + Bootstrap 5
+* **Banco de dados:** PostgreSQL
+* **Upload de imagens:** Sistema de arquivos local (`/uploads/images`) ou Cloudinary (futuramente)
 
 ---
 
 ## 🔐 Funcionalidades do MVP
 
 ### ✅ Autenticação
-- Cadastro e login de usuários (Laravel Breeze)
+
+* Cadastro e login de usuários
+* Sessão autenticada com Spring Security
 
 ### ✅ Planejamento do Casamento
-- Criar um planejamento com data e tema
-- Um usuário pode ter **1 planejamento ativo**
+
+* Criar um planejamento com data e tema
+* Um usuário pode ter **1 planejamento ativo**
 
 ### ✅ Checklist
-- Adicionar itens
-- Marcar como concluído
-- Remover itens
+
+* Adicionar itens
+* Marcar como concluído
+* Remover itens
 
 ### ✅ Músicas
-- Adicionar músicas com título, artista e link do Spotify (opcional)
+
+* Adicionar músicas com título, artista e link do Spotify (opcional)
 
 ### ✅ Galeria de Inspiração
-- Upload de imagens com categoria (vestido, decoração, etc.)
-- Listar imagens já enviadas
+
+* Upload de imagens com categoria (vestido, decoração, etc.)
+* Listar imagens já enviadas
 
 ---
 
-## 🗃️ Estrutura de Dados
+## 🏣 Estrutura de Dados
 
-### Tabela: `users`
+### Entidade: `User`
 
-| Campo      | Tipo    |
-|------------|---------|
-| id         | bigint  |
-| name       | string  |
-| email      | string  |
-| password   | string  |
-| timestamps | ✔       |
+* id
+* name
+* email
+* password
+* timestamps
+* relacionamento: 1-1 com `WeddingPlan`
 
-### Tabela: `wedding_plans`
+### Entidade: `WeddingPlan`
 
-| Campo         | Tipo    |
-|---------------|---------|
-| id            | bigint  |
-| user_id       | FK      |
-| wedding_date  | date    |
-| theme         | string  |
-| venue_type    | enum    |
-| venue_idea    | text    |
-| timestamps    | ✔       |
+* id
+* user\_id (FK)
+* wedding\_date
+* theme
+* venue\_type (enum)
+* venue\_idea
+* timestamps
+* relacionamentos:
 
-### Tabela: `checklist_items`
+  * 1-N com `ChecklistItem`
+  * 1-N com `MusicIdea`
+  * 1-N com `StyleReference`
 
-| Campo            | Tipo     |
-|------------------|----------|
-| id               | bigint   |
-| wedding_plan_id  | FK       |
-| item             | string   |
-| completed        | boolean  |
-| notes            | text     |
-| timestamps       | ✔        |
+### Entidade: `ChecklistItem`
 
-### Tabela: `music_ideas`
+* id
+* wedding\_plan\_id (FK)
+* item
+* completed
+* notes
+* timestamps
 
-| Campo            | Tipo     |
-|------------------|----------|
-| id               | bigint   |
-| wedding_plan_id  | FK       |
-| title            | string   |
-| artist           | string   |
-| spotify_link     | string   |
-| notes            | text     |
-| timestamps       | ✔        |
+### Entidade: `MusicIdea`
 
-### Tabela: `style_references`
+* id
+* wedding\_plan\_id (FK)
+* title
+* artist
+* spotify\_link
+* notes
+* timestamps
 
-| Campo            | Tipo     |
-|------------------|----------|
-| id               | bigint   |
-| wedding_plan_id  | FK       |
-| image_path       | string   |
-| category         | string   |
-| notes            | text     |
-| timestamps       | ✔        |
+### Entidade: `StyleReference`
+
+* id
+* wedding\_plan\_id (FK)
+* image\_path
+* category
+* notes
+* timestamps
+
+### Enum: `VenueType`
+
+* INDOOR
+* OUTDOOR
+* DESTINATION
 
 ---
 
-## 🛠️ Comandos Úteis
+## 📂 Estrutura Inicial do Projeto
 
-### Criar projeto
-```bash
-composer create-project laravel/laravel wedding-planner
 ```
-## Instalar autenticação simples (Laravel Breeze)
-```bash
-composer require laravel/breeze --dev
-php artisan breeze:install
-npm install && npm run dev
-php artisan migrate
+src/
+├── main/
+│   ├── java/com/seuprojeto/
+│   │   ├── controller/
+│   │   ├── entity/
+│   │   ├── repository/
+│   │   ├── service/
+│   │   └── config/
+│   └── resources/
+│       ├── templates/
+│       └── application.properties
 ```
-## Criar models, migrations e controllers 
-```
-php artisan make:model WeddingPlan -mcr
-php artisan make:model ChecklistItem -mcr
-php artisan make:model MusicIdea -mcr
-php artisan make:model StyleReference -mcr
-```
+
+---
+
+## 🌐 Rotas Previstas
+
+* `/login` e `/register` (autenticação)
+* `/wedding-plans`
+* `/checklist`
+* `/musics`
+* `/gallery`
+
+Todas as rotas estarão protegidas por autenticação.
+
+---
+
 ## 🖼️ Upload de Imagens
 
-- Usar Storage::put() para salvar imagens em public/images
+* Armazenamento local em `/uploads/images` (acessível publicamente)
+* Planejamento futuro de uso do Cloudinary ou serviço similar para armazenar as imagens na nuvem
 
-- Alternativa futura: integração com Cloudinary
+---
 
-## 🌐 Rotas
+## ⚙️ Deploy Recomendado
 
-```php
-Route::middleware(['auth'])->group(function () {
-    Route::resource('wedding-plans', WeddingPlanController::class);
-    Route::resource('checklist', ChecklistItemController::class);
-    Route::resource('musics', MusicIdeaController::class);
-    Route::resource('gallery', StyleReferenceController::class);
-});
-```
-## 📦 Deploy Recomendado
-- Render.com (grátis e simples)
+* [Render.com](https://render.com) (simples e gratuito para MVP)
+* Railway
+* Fly.io
+* Heroku (com buildpack customizado para Java 21)
 
-- Laravel Forge (produção, pago)
+---
 
-- Umbler / HostGator (PHP hosting simples)
+## ✅ Pós-MVP (funcionalidades futuras)
 
-- XAMPP ou Laragon (ambiente local)
-
-
-## ✅ Pós-MVP (para considerar depois)
-
-- Múltiplos planejamentos por usuário
-
-- Colaboração de terceiros (convidados)
-
-- Exportar PDF do planejamento
-
-- IA para sugestões automáticas (músicas, imagens, tarefas)
-
-
-
+* Suporte a múltiplos planejamentos por usuário
+* Colaboração de terceiros (familiares, amigos, organizadores)
+* Exportar planejamento como PDF
+* Sugestões automáticas com IA (tarefas, músicas, imagens)
+* Comentários nas inspirações e músicas
+* Timeline visual do casamento
